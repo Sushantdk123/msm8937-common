@@ -120,4 +120,36 @@ $(RFS_MSM_SLPI_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 
 ALL_DEFAULT_INSTALLED_MODULES += $(RFS_MSM_ADSP_SYMLINKS) $(RFS_MSM_MPSS_SYMLINKS) $(RFS_MSM_SLPI_SYMLINKS)
 
+# A/B builds require us to create the mount points at compile time.
+# Just creating it for all cases since it does not hurt.
+FIRMWARE_MOUNT_POINT := $(TARGET_OUT_VENDOR)/firmware_mnt
+DSP_MOUNT_POINT := $(TARGET_OUT_VENDOR)/dsp
+
+$(FIRMWARE_MOUNT_POINT):
+	@echo "Creating $(FIRMWARE_MOUNT_POINT)"
+	@mkdir -p $(TARGET_OUT_VENDOR)/firmware_mnt
+ifneq ($(TARGET_MOUNT_POINTS_SYMLINKS),false)
+	@ln -sf /vendor/firmware_mnt $(TARGET_ROOT_OUT)/firmware
+endif
+
+$(DSP_MOUNT_POINT):
+	@echo "Creating $(DSP_MOUNT_POINT)"
+	@mkdir -p $(TARGET_OUT_VENDOR)/dsp
+ifneq ($(TARGET_MOUNT_POINTS_SYMLINKS),false)
+	@ln -sf /vendor/dsp $(TARGET_ROOT_OUT)/dsp
+endif
+
+ALL_DEFAULT_INSTALLED_MODULES += $(FIRMWARE_MOUNT_POINT) $(DSP_MOUNT_POINT)
+
+IMS_LIBS := libimscamera_jni.so libimsmedia_jni.so
+
+IMS_SYMLINKS := $(addprefix $(TARGET_OUT_VENDOR_APPS)/ims/lib/arm64/,$(notdir $(IMS_LIBS)))
+$(IMS_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "IMS lib link: $@"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	$(hide) ln -sf /system/vendor/lib64/$(notdir $@) $@
+
+ALL_DEFAULT_INSTALLED_MODULES += $(IMS_SYMLINKS)
+
 endif
