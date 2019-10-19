@@ -136,7 +136,7 @@ PRODUCT_PACKAGES += \
     android.hardware.biometrics.fingerprint@2.1-service.xiaomi_msm8937
 
 # FM
-PRODUCT_PACKAGES += \
+# PRODUCT_PACKAGES += \
     FMRadio \
     libfmjni
 
@@ -405,8 +405,12 @@ PRODUCT_COPY_FILES += \
     $(VENDOR_PATH)/wifi/firmware/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/firmware/wlan/prima/WCNSS_qcom_cfg.ini
 
 # WiFi Display
-PRODUCT_BOOT_JARS += \
+# PRODUCT_BOOT_JARS += \
     WfdCommon
 
 # Inherit common proprietary files
 $(call inherit-product-if-exists, vendor/xiaomi/msm8937-common/msm8937-common-vendor.mk)
+
+# Soong namespaces
+PRODUCT_SOONG_NAMESPACES += \
+    $(VENDOR_PATH)
